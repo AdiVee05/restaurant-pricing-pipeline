@@ -25,25 +25,62 @@ from sqlalchemy.orm import relationship
 class Base(DeclarativeBase):
     pass
 
-class User(Base):
-    __tablename__ = "user_account"
-    id: Mapped[int] = mapped_column(primary_key=True)
+class Restaurants(Base):
+    __tablename__ = "Restaurants"
+    restaurant_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
-    fullname: Mapped[Optional[str]]
+    location: Mapped[str] = mapped_column(String(30))
+    region: Mapped[str]= mapped_column(String(30))
     addresses: Mapped[List["Address"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
+        return f"restaurant(id={self.restaurant_id!r}, name={self.name!r}, location={self.location!r}, region={self.region})"
 
-class Address(Base):
-    __tablename__ = "address"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email_address: Mapped[str]
-    user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
+class menu_items(Base):
+    __tablename__ = "menu_items"
+    name: Mapped[str] = mapped_column(primary_key=True)
+    PLU: Mapped[int] = mapped_column(primary_key=True)
+    restaurant_id: Mapped[int] = mapped_column(ForeignKey("menu_items.restaurant_id"))
+    base_cost: Mapped[int] 
+    food_type: Mapped[str] = mapped_column(String(30))
     user: Mapped["User"] = relationship(back_populates="addresses")
     def __repr__(self) -> str:
-        return f"Address(id={self.id!r}, email_address={self.email_address!r})"
+        return f"name(id={self.name!r}, PLU={self.PLU!r}, restaurant_id={self.restaurant_id}, base_cost={self.base_cost}, food_type={self.food_type})"
+
+class transactions(Base):
+    __tablename__ = "transactions"
+    transaction_id: Mapped[int] = mapped_column(primary_key=True)
+    restaurant_id: Mapped[int] = mapped_column(ForeignKey("transactions.restaurant_id"))
+    amount: Mapped[int] 
+    day: Mapped[int] 
+    year: Mapped[int] 
+    TOT: Mapped[int] 
+    user: Mapped["User"] = relationship(back_populates="addresses")
+    def __repr__(self) -> str:
+        return f"transaction_id(id={self.transaction_id!r}, restaurant_id={self.restaurant_id!r}, amount={self.amount}, amount={self.amount}, day={self.day}, year={self.year}, TOT={self.TOT})"
+
+class transaction_items(Base):
+    __tablename__ = "transaction_items"
+    restaurant_id: Mapped[int] = mapped_column(primary_key=True)
+    transaction_id: Mapped[int] = mapped_column(ForeignKey("transactions_items.transactions"))
+    PLU: Mapped[int] = mapped_column(ForeignKey("transactions_items.menu_items"))
+    price_ats: Mapped[int] 
+    quantity: Mapped[int] 
+    user: Mapped["User"] = relationship(back_populates="addresses")
+    def __repr__(self) -> str:
+        return f"restaurant_id={self.restaurant_id!r}, transaction_id={self.transaction_id}, PLU={self.PLU}, price_ats={self.price_ats}, quantity={self.quantity})"
+
+class price_history(Base):
+    __tablename__ = "price_history"
+    price_id: Mapped[int] = mapped_column(primary_key=True)
+    PLU: Mapped[int] = mapped_column(ForeignKey("transactions_items.menu_items"))
+    price: Mapped[int] 
+    effective_date: Mapped[str] 
+    change_reason: Mapped[str]
+    user: Mapped["User"] = relationship(back_populates="addresses")
+    def __repr__(self) -> str:
+        return f"price_id={self.restaurant_id!r}, PLU={self.PLU}, price={self.price}, effective_date={self.effective_date}, change_reason={self.change_reason})"
 
 Base.metadata.create_all(engine)
 print("Jarvis - TABLES HAVE BEEN CREATED!!")
