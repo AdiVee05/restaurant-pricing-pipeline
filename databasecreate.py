@@ -28,6 +28,7 @@ class Base(DeclarativeBase):
 class restaurants(Base):
     __tablename__ = "restaurants"
     restaurant_id: Mapped[int] = mapped_column(primary_key=True)
+    store_number: Mapped[int]
     name: Mapped[str] = mapped_column(String(30))
     location: Mapped[str] = mapped_column(String(30))
     region: Mapped[str]= mapped_column(String(30))
