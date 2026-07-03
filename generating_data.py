@@ -3,11 +3,12 @@ fake = Faker()
 import numpy as np
 rng = np.random.default_rng()
 import random
+from datetime import datetime
 
 restaurants_avaliable = []
 menu_items_avaliable = []
 PLU_duplicates = set()
-
+full_transactions = []
 for i in range(10): #restaurants
     name = "Wednesday's"
     location = fake.city()
@@ -42,9 +43,47 @@ for i in range(10): #restaurants
             base_cost = round(random.uniform(5.00, 9.00), 2)
         elif food_type == "Chicken Nuggets":
             base_cost = round(random.uniform(4.00, 8.00), 2)
-        elif food_type == "Sandwich":
-            base_cost = round(random.uniform(6.00, 9.00), 2)
             
         menu_items = {"name": name, "PLU": PLU, "base_cost": base_cost, "food_type": food_type, "restaurant_id": restaurant_id}
         menu_items_avaliable.append(menu_items)
-       
+
+## Transactions
+for t in range(90000):
+    month = random.randint(1,12)
+    day = random.randint(1,28)
+    year = random.choice([2024,2025])
+
+    transaction_id = t+1;
+    restaurant_id = random.choice(restaurants_avaliable)["restaurant_id"] ##index needed to access specific id 
+    TOT = random.randint(0,23) #(1,24)                                    ##instead of making random id
+    amount = round(random.uniform(6.00, 15.00), 2)
+    transactions = {"month": month, "day": day, "year": year, "transaction_id": transaction_id, "restaurant_id": restaurant_id, "TOT": TOT, "amount": amount}
+    full_transactions.append(transactions)
+
+#### price_history
+change_reasons = ["Supply Cost Adjustment", "Seasonal Price Change", "Labor Changes", "Fuel Cost Change", "Menu Restructure"]
+price_change_dates = [datetime(2024, 1, 16), datetime(2024, 3, 25), datetime(2024, 6, 11), datetime(2024, 9, 4), datetime(2025, 1, 5)]
+price_id_counter = 0
+price_history_avalible = []
+
+for item in menu_items_avaliable:
+    previous_price = item["base_cost"]
+
+    for i, date in enumerate(price_change_dates):
+        price = round((previous_price * random.uniform(1.10, 1.15)),2)
+        change_reason = random.choice(change_reasons)
+        price_id = price_id_counter
+        if i == len(price_change_dates)-1:
+            end_date = None
+        else:
+            end_date = price_change_dates[i+1]
+
+        price_id_counter+=1
+        previous_price = price 
+
+        price_history = {"price": price, "PLU": item["PLU"], "effective_date": date, "change_reason": change_reason, "price_id": price_id, "end_date": end_date}
+        price_history_avalible.append(price_history)
+
+        ## transaction_items
+
+        
