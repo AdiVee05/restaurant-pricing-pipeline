@@ -84,6 +84,28 @@ for item in menu_items_avaliable:
         price_history = {"price": price, "PLU": item["PLU"], "effective_date": date, "change_reason": change_reason, "price_id": price_id, "end_date": end_date}
         price_history_avalible.append(price_history)
 
-        ## transaction_items
+## transaction_items
+transaction_items_avalible = []
+t_id_count = 1
 
-        
+for transactions in full_transactions:
+    menu_match = []
+
+    for i in menu_items_avaliable:
+        if i["restaurant_id"]==transactions["restaurant_id"]:
+            menu_match.append(i)
+    
+    num_of_items= random.randint(1,4);
+    receipt = random.sample(menu_match, num_of_items)
+
+    for j in receipt:
+        id = t_id_count
+        restaurant_id = transactions["restaurant_id"]
+        transaction_id = transactions["transaction_id"]
+        PLU = j["PLU"]
+        price_ats = j["base_cost"]
+        quantity = random.randint(1,3)
+        receipt_transactions = {"id": id, "restaurant_id": restaurant_id, "transaction_id": transaction_id, "PLU": PLU, "price_ats": price_ats, "quantity": quantity}
+        transaction_items_avalible.append(receipt_transactions)
+    
+    t_id_count+=1
