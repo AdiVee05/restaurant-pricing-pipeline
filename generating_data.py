@@ -1,9 +1,23 @@
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
+
 from faker import Faker
 fake = Faker()
+
 import numpy as np
 rng = np.random.default_rng()
+
 import random
 from datetime import datetime
+
+import pandas as pd
+
+load_dotenv()
+engine = create_engine(os.getenv("DATABASE_URL"))
+
+
+
 
 restaurants_avaliable = []
 menu_items_avaliable = []
@@ -109,3 +123,21 @@ for transactions in full_transactions:
         transaction_items_avalible.append(receipt_transactions)
     
     t_id_count+=1
+
+### importing data
+##DataFrame.to_sql(name, con, *, schema=None, if_exists='fail', index=True, index_label=None, chunksize=None, dtype=None, method=None)
+
+df_restaurants = pd.DataFrame(restaurants_avaliable)
+df_restaurants.to_sql("restaurants", engine, if_exists="append", index=False)
+
+df_menu_items = pd.DataFrame(menu_items_avaliable)
+df_menu_items.to_sql("menu_items", engine, if_exists="append", index=False)
+
+df_transactions = pd.DataFrame(full_transactions)
+df_transactions.to_sql("transactions", engine, if_exists="append", index=False)
+
+df_transaction_items = pd.DataFrame(transaction_items_avalible)
+df_transaction_items.to_sql("transaction_items", engine, if_exists="append", index=False)
+
+df_price_history = pd.DataFrame(price_history_avalible)
+df_price_history.to_sql("price_history", engine, if_exists="append", index=False)
