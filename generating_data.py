@@ -16,9 +16,6 @@ import pandas as pd
 load_dotenv()
 engine = create_engine(os.getenv("DATABASE_URL"))
 
-
-
-
 restaurants_avaliable = []
 menu_items_avaliable = []
 PLU_duplicates = set()
