@@ -57,6 +57,9 @@ try:
 except Exception as e:
     logging.error(f"Failed to get restaurant_id: {e}")
     restaurant_ids = []
+    if not restaurant_ids:
+        logging.error("No restaurant IDs loaded, exiting script")
+        exit()
     
 """ with engine.connect() as conn:
     result = conn.execute(text("SELECT restaurant_id FROM restaurants")) ## connection to table with rest ids

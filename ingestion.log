@@ -64,3 +64,36 @@ Response headers:
     'x-ms-request-server-encrypted': 'REDACTED'
     'Date': 'Mon, 27 Jul 2026 23:47:35 GMT'
 2026-07-27 18:47:38,301 - INFO - Inserted daily transactions successfully
+2026-07-27 19:34:05,946 - ERROR - Failed to get max_id: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 18 for SQL Server]TCP Provider: Timeout error [258].  (258) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Unable to complete login process due to delay in login response (258)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-07-27 19:34:21,169 - ERROR - Failed to get restaurant_id: (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 18 for SQL Server]TCP Provider: Timeout error [258].  (258) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Unable to complete login process due to delay in login response (258)')
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-07-27 19:36:39,813 - INFO - max_id aqquired: 90246
+2026-07-27 19:36:39,896 - INFO - restaurant_id aqquired: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+2026-07-27 19:36:39,993 - INFO - Request URL: 'https://restaurantpipelineblob.blob.core.windows.net/restaurantpipelineblobed/2026-07-27.json'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '13318'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.30.0 Python/3.14.2 (Windows-11-10.0.26200-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '65face70-8a1c-11f1-bf8a-b81ea43c3c2a'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+2026-07-27 19:36:40,758 - INFO - Response status: 201
+Response headers:
+    'Content-Length': '0'
+    'Content-MD5': 'REDACTED'
+    'Last-Modified': 'Tue, 28 Jul 2026 00:36:38 GMT'
+    'ETag': '"0x8DEEC40495DD1E1"'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'a1cef65c-501e-0021-1629-1ee06f000000'
+    'x-ms-client-request-id': '65face70-8a1c-11f1-bf8a-b81ea43c3c2a'
+    'x-ms-version': 'REDACTED'
+    'x-ms-content-crc64': 'REDACTED'
+    'x-ms-request-server-encrypted': 'REDACTED'
+    'Date': 'Tue, 28 Jul 2026 00:36:38 GMT'
+2026-07-27 19:36:41,088 - INFO - Inserted daily transactions successfully
