@@ -96,30 +96,59 @@ for item in menu_items_avaliable:
         price_history_avalible.append(price_history)
 
 ## transaction_items
+## price lookup: every price change for each PLU, in date order
+price_by_plu = {}
+for change in price_history_avalible:
+    if change["PLU"] not in price_by_plu:
+        price_by_plu[change["PLU"]] = []
+    price_by_plu[change["PLU"]].append(change)
+
+## the "true" elasticity baked into the fake data (more negative = more price sensitive)
+true_elasticity = {"Burger": -1.2, "Sandwich": -1.0, "Tenders": -0.8, "Fries": -0.5, "Drink": -0.3}
+
+def price_on(item, sale_date):
+    # price in effect for this item on a given date (base_cost before the first change)
+    price = item["base_cost"]
+    for change in price_by_plu[item["PLU"]]:
+        if change["effective_date"] <= sale_date:
+            price = change["price"]
+    return price
+
+## transaction_items
 transaction_items_avalible = []
 t_id_count = 1
 
 for transactions in full_transactions:
     menu_match = []
-
     for i in menu_items_avaliable:
-        if i["restaurant_id"]==transactions["restaurant_id"]:
+        if i["restaurant_id"] == transactions["restaurant_id"]:
             menu_match.append(i)
-    
-    num_of_items= random.randint(1,4);
-    receipt = random.sample(menu_match, num_of_items)
+
+    num_of_items = random.randint(1, 4)
+    picked = random.sample(menu_match, num_of_items)
+    sale_date = datetime(transactions["year"], transactions["month"], transactions["day"])
+
+    # higher price than base_cost means a lower chance the customer still orders it
+    receipt = []
+    for j in picked:
+        price = price_on(j, sale_date)
+        keep_chance = (price / j["base_cost"]) ** true_elasticity[j["food_type"]]
+        if random.random() < keep_chance:
+            receipt.append(j)
+    if len(receipt) == 0:
+        receipt.append(picked[0])   # a real transaction has at least one item
 
     for j in receipt:
-        id = t_id_count
-        restaurant_id = transactions["restaurant_id"]
-        transaction_id = transactions["transaction_id"]
-        PLU = j["PLU"]
-        price_ats = j["base_cost"]
-        quantity = random.randint(1,3)
-        receipt_transactions = {"id": id, "restaurant_id": restaurant_id, "transaction_id": transaction_id, "PLU": PLU, "price_ats": price_ats, "quantity": quantity}
+        receipt_transactions = {
+            "id": t_id_count,
+            "restaurant_id": transactions["restaurant_id"],
+            "transaction_id": transactions["transaction_id"],
+            "PLU": j["PLU"],
+            "price_ats": price_on(j, sale_date),
+            "quantity": random.randint(1, 3)
+        }
         transaction_items_avalible.append(receipt_transactions)
-    
-    t_id_count+=1
+        t_id_count += 1
 
 ### importing data
 ##DataFrame.to_sql(name, con, *, schema=None, if_exists='fail', index=True, index_label=None, chunksize=None, dtype=None, method=None)
