@@ -9,3 +9,6 @@
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
 2026-11-13 23:56:28,550 - ERROR - failed to get data (pyodbc.OperationalError) ('08001', '[08001] [Microsoft][ODBC Driver 18 for SQL Server]TCP Provider: Timeout error [258].  (258) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 18 for SQL Server]Unable to complete login process due to delay in login response (258)')
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-11-14 02:12:46,973 - INFO - 2 changes detected
+2026-11-14 02:12:47,807 - INFO - 6 changes detected
+2026-11-14 02:12:48,179 - INFO - 2 changes detected
