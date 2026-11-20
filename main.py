@@ -67,3 +67,16 @@ def simulate(PLU: int, price_change_pct: float):
     if(result is None):
         raise HTTPException(status_code=404, detail="Item not found")
     return result
+
+@app.get("/items/{PLU}/monthly-volume")
+def monthly_volume(PLU: int):
+    with engine.connect() as conn:
+        result = conn.execute(text("""
+            SELECT t.year, t.month, COUNT(*) as orders
+            FROM transaction_items ti
+            JOIN transactions t ON ti.transaction_id = t.transaction_id
+            WHERE ti.PLU = :PLU
+            GROUP BY t.year, t.month
+            ORDER BY t.year, t.month
+        """), {"PLU": PLU})
+        return rows_to_dicts(result)
