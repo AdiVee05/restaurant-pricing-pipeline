@@ -2,6 +2,7 @@ import os
 import requests
 import pandas as pd
 import streamlit as st
+import time
 from plotly.subplots import make_subplots
 
 API_URL = os.getenv("API_URL", "https://restaurant-pricing-pipeline.azurewebsites.net")
@@ -16,11 +17,22 @@ def get_json(path):
     r.raise_for_status()
     return r.json()
 
-try:
-    restaurants = get_json("/restaurants")
-except Exception:
-    st.error("Couldn't reach the API. The database may be waking up, so refresh in a minute.")
-    st.stop()
+def get_with_retry(path, attempts=4):
+    # free tier sleeps when idle, so the first calls can fail while it wakes up
+    for i in range(attempts):
+        try:
+            return get_json(path)
+        except Exception:
+            if (i == attempts-1):
+                raise
+            time.sleep(15)
+
+with st.spinner("Waking up the server. This can take up to a minute the first time..."):
+    try:
+        restaurants = get_with_retry("/restaurants")
+    except Exception:
+        st.error("The server is still waking up. Refresh the page in a minute.")
+        st.stop()
 
 st.sidebar.title("🍟 Wednesday's")
 st.sidebar.caption("Menu pricing analytics")
